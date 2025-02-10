@@ -88,3 +88,13 @@ input[type="datetime-local"], select {
   color: #ccc;
   font-size: 0.8em;
 }
+
+@media (max-width: 600px) {
+  .glass-card {
+    flex-direction: column;
+  }
+  input, button, select {
+    width: 100% !important;
+    margin: 5px 0 !important;
+  }
+}
