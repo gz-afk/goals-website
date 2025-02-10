@@ -15,6 +15,38 @@
         </div>
         <div id="goalsList"></div>
     </div>
+    <div class="glass-card">
+  <input type="text" id="goalInput" placeholder="Goal...">
+  <input type="datetime-local" id="dueDateInput">
+  <select id="timeFrame">
+    <option value="short">Short-term (<1 week)</option>
+    <option value="medium">Medium-term (1-4 weeks)</option>
+    <option value="long">Long-term (>1 month)</option>
+  </select>
+  <button onclick="addGoal()">Add Goal</button>
+</div>
     <script src="app.js"></script>
+<!-- Load Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+
+<!-- Initialize Firebase -->
+<script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyCqeYnx64p1kZW-h4EnZrRtz-dQ2z9SrZ4",
+  authDomain: "goals-app-b6571.firebaseapp.com",
+  projectId: "goals-app-b6571",
+  storageBucket: "goals-app-b6571.firebasestorage.app",
+  messagingSenderId: "605102449006",
+  appId: "1:605102449006:web:8ee3ca4706aa58bfb9217f",
+  measurementId: "G-65ZDTQVEG9"
+};
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore(); // Firestore instance
+  const auth = firebase.auth();    // Authentication instance
+</script>
 </body>
 </html>
