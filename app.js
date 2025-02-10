@@ -24,29 +24,53 @@ function deleteGoal(button) {
     removeGoalFromStorage(goalText);
 }
 
-// Save to localStorage
-function saveGoal(goal) {
-    const goals = JSON.parse(localStorage.getItem('goals') || '[]');
-    goals.push(goal);
-    localStorage.setItem('goals', JSON.stringify(goals));
+// Save goal to Firestore
+async function addGoal() {
+  const user = auth.currentUser;
+  if (!user) return alert("Please sign in!");
+
+  const goal = {
+    text: document.getElementById('goalInput').value,
+    dueDate: document.getElementById('dueDateInput').value,
+    timeFrame: document.getElementById('timeFrame').value,
+    userId: user.uid,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  // Add to Firestore
+  await db.collection('goals').add(goal);
+  loadGoals(); // Refresh the list
 }
 
-// Load from localStorage
-function loadGoals() {
-    const goals = JSON.parse(localStorage.getItem('goals') || '[]');
-    goals.forEach(goal => {
-        const goalDiv = document.createElement('div');
-        goalDiv.className = 'goal-item';
-        goalDiv.innerHTML = `
-            <span>${goal}</span>
-            <button onclick="deleteGoal(this)">❌</button>
-        `;
-        document.getElementById('goalsList').appendChild(goalDiv);
-    });
+// Load goals from Firestore
+async function loadGoals() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const query = await db.collection('goals')
+    .where("userId", "==", user.uid)
+    .orderBy("createdAt", "desc")
+    .get();
+
+  const goalsList = document.getElementById('goalsList');
+  goalsList.innerHTML = "";
+
+  query.forEach(doc => {
+    const goal = doc.data();
+    const goalDiv = document.createElement('div');
+    goalDiv.className = 'goal-item';
+    goalDiv.innerHTML = `
+      <span>${goal.text}</span>
+      <small>Due: ${new Date(goal.dueDate).toLocaleDateString()}</small>
+      <small>Timeframe: ${goal.timeFrame}</small>
+      <button onclick="deleteGoal('${doc.id}')">❌</button>
+    `;
+    goalsList.appendChild(goalDiv);
+  });
 }
 
-function removeGoalFromStorage(goalText) {
-    let goals = JSON.parse(localStorage.getItem('goals'));
-    goals = goals.filter(goal => goal !== goalText);
-    localStorage.setItem('goals', JSON.stringify(goals));
+// Delete goal
+async function deleteGoal(docId) {
+  await db.collection('goals').doc(docId).delete();
+  loadGoals();
 }
