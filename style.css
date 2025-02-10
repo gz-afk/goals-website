@@ -57,3 +57,11 @@ button:hover {
     justify-content: space-between;
     align-items: center;
 }
+input[type="datetime-local"], select {
+  width: 200px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 5px;
+}
