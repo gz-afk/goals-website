@@ -74,3 +74,38 @@ async function deleteGoal(docId) {
   await db.collection('goals').doc(docId).delete();
   loadGoals();
 }
+
+// Auth functions
+async function signUp() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  await auth.createUserWithEmailAndPassword(email, password);
+  toggleAuthUI();
+}
+
+async function signIn() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  await auth.signInWithEmailAndPassword(email, password);
+  toggleAuthUI();
+}
+
+async function signOut() {
+  await auth.signOut();
+  toggleAuthUI();
+}
+
+// Auth state listener
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.querySelector('[onclick="signOut()"]').style.display = 'inline';
+    loadGoals();
+  } else {
+    document.querySelector('[onclick="signOut()"]').style.display = 'none';
+  }
+});
+
+// Toggle UI based on auth state
+function toggleAuthUI() {
+  document.getElementById('goalsList').innerHTML = "";
+}
